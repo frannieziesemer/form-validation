@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Form Validation</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="formValidation">
+        <h1>Form Validation</h1>
+        <form>
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Email address</label> -->
+            <input
+              type="email"
+              class="form-control"
+              id="username"
+              aria-describedby="emailHelp"
+              placeholder="Enter email"
+            />
+            <small id="emailHelp" class="form-text text-muted validText"
+              >Please enter valid email</small
+            >
+          </div>
+          <div class="form-group">
+            <!-- <label for="exampleInputPassword1">Password</label> -->
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              placeholder="Password"
+            />
+          </div>
+          <h3>Password must contain the following:</h3>
+          <ul>
+            <li id="lowercase" class="invalid">A <b>lowercase</b> letter</li>
+            <li id="uppercase" class="invalid">
+              A <b>capital (uppercase)</b> letter
+            </li>
+            <li id="number" class="invalid">A <b>number</b></li>
+            <li id="minChars" class="invalid">Minimum <b>8 characters</b></li>
+          </ul>
+          <div class="form-group">
+            <input
+              type="number"
+              class="form-control validCredit"
+              id="creditCard"
+              placeholder="Credit Card Number"
+            />
+            <small id="creditHelp" class="form-text text-muted validText"
+              >Please enter valid credit card number</small
+            >
+          </div>
+
+          <button
+            type="submit"
+            id="submitButton"
+            class="btn btn-primary"
+            disabled
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+    <script>
+      const password = document.getElementById("password");
+      const username = document.getElementById("username");
+      const submit = document.getElementById("submit");
+      const creditCard = document.getElementById("creditCard");
+
+      let isSubmitButtonDisabled = true;
+
+      submitButton.disabled = isSubmitButtonDisabled;
+
+      username.onkeyup = function () {
+        // console.log("letter typed:", username.value);
+
+        const emailFormat = /[a-zA-Z0-9!$%&=*+_-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9]/;
+        const emailElement = document.getElementById("emailHelp");
+
+        if (emailFormat.test(username.value)) {
+          emailElement.classList.add("validText");
+          emailElement.classList.remove("invalidText");
+          isSubmitButtonDisabled = false;
+        } else {
+          emailElement.classList.add("invalidText");
+          emailElement.classList.remove("validText");
+          isSubmitButtonDisabled = true;
+        }
+      };
+
+      password.onkeyup = function () {
+        //console.log("letter typed: ", password.value);
+
+        // regular expressions
+        const lowercaseLetterPattern = /[a-z]/;
+        const uppercaseLetterPattern = /[A-Z]/;
+        const numbersPattern = /[0-9]/;
+        // const minCharactersPattern = /.{8}/;
+
+        const lowercaseElement = document.getElementById("lowercase");
+        const uppercaseElement = document.getElementById("uppercase");
+        const numberElement = document.getElementById("number");
+        const minCharsElement = document.getElementById("minChars");
+
+        let isLowercaseLetterPatternValid = false;
+        let isUppercaseLetterPatternValid = false;
+        let isNumbersPatternValid = false;
+        let isPasswordLengthValid = false;
+
+        if (lowercaseLetterPattern.test(password.value)) {
+          lowercaseElement.classList.remove("invalid");
+          lowercaseElement.classList.add("valid");
+          isLowercaseLetterPatternValid = true;
+        } else {
+          lowercaseElement.classList.remove("valid");
+          lowercaseElement.classList.add("invalid");
+          isLowercaseLetterPatternValid = false;
+        }
+
+        if (uppercaseLetterPattern.test(password.value)) {
+          uppercaseElement.classList.remove("invalid");
+          uppercaseElement.classList.add("valid");
+          isUppercaseLetterPatternValid = true;
+        } else {
+          uppercaseElement.classList.remove("valid");
+          uppercaseElement.classList.add("invalid");
+          isUppercaseLetterPatternValid = false;
+        }
+
+        if (numbersPattern.test(password.value)) {
+          numberElement.classList.remove("invalid");
+          numberElement.classList.add("valid");
+          isNumbersPatternValid = true;
+        } else {
+          numberElement.classList.remove("valid");
+          numberElement.classList.add("invalid");
+          isNumbersPatternValid = false;
+        }
+
+        if (password.value.length >= 8) {
+          minCharsElement.classList.remove("invalid");
+          minCharsElement.classList.add("valid");
+          isPasswordLengthValid = true;
+        } else {
+          minCharsElement.classList.add("invalid");
+          minCharsElement.classList.remove("valid");
+          isPasswordLengthValid = false;
+        }
+
+        submitButton.disabled = !(
+          isLowercaseLetterPatternValid &&
+          isUppercaseLetterPatternValid &&
+          isNumbersPatternValid &&
+          isPasswordLengthValid
+        );
+      };
+
+      creditCard.onkeyup = function () {
+        let isCreditCardNumberValid;
+        let creditNumber = creditCard.value;
+
+        let array = (creditNumber + "")
+          .split("")
+          .reverse()
+          .map((x) => parseInt(x));
+        let lastDigit = array.splice(0, 1)[0];
+        let sum = array.reduce(
+          (acc, val, i) =>
+            i % 2 !== 0 ? acc + val : acc + ((val * 2) % 9) || 9,
+          0
+        );
+        sum += lastDigit;
+        // console.log(sum % 10 === 0);
+        isCreditCardNumberValid = sum % 10 === 0;
+
+        const creditCardElement = document.getElementById("creditHelp");
+
+        if (isCreditCardNumberValid === true) {
+          creditCardElement.classList.add("validText");
+          creditCardElement.classList.remove("invalidText");
+        } else {
+          creditCardElement.classList.add("invalidText");
+          creditCardElement.classList.remove("validText");
+        }
+
+        submitButton.disabled = !isCreditCardNumberValid;
+        console.log(isCreditCardNumberValid);
+      };
+    </script>
+  </body>
+</html>

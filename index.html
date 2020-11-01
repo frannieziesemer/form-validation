@@ -74,28 +74,33 @@
     <script>
       const password = document.getElementById("password");
       const username = document.getElementById("username");
-      const submit = document.getElementById("submit");
+      const submitButton = document.getElementById("submitButton");
       const creditCard = document.getElementById("creditCard");
 
       let isSubmitButtonDisabled = true;
+      let isUsernameTrue = false;
+      let isPasswordTrue = false;
+      let isCreditCardTrue = false;
 
       submitButton.disabled = isSubmitButtonDisabled;
 
       username.onkeyup = function () {
         // console.log("letter typed:", username.value);
 
-        const emailFormat = /[a-zA-Z0-9!$%&=*+_-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9]/;
+        const emailFormat = /[a-zA-Z0-9!$%&=*+_-]+@[a-zA-Z0-9-]+\.[a-zA-Z]/;
         const emailElement = document.getElementById("emailHelp");
 
         if (emailFormat.test(username.value)) {
           emailElement.classList.add("validText");
           emailElement.classList.remove("invalidText");
-          isSubmitButtonDisabled = false;
+          isUsernameTrue = true;
         } else {
           emailElement.classList.add("invalidText");
           emailElement.classList.remove("validText");
-          isSubmitButtonDisabled = true;
+          isUsernameTrue = false;
         }
+
+        enableSubmit();
       };
 
       password.onkeyup = function () {
@@ -157,44 +162,72 @@
           isPasswordLengthValid = false;
         }
 
-        submitButton.disabled = !(
+        if (
           isLowercaseLetterPatternValid &&
           isUppercaseLetterPatternValid &&
           isNumbersPatternValid &&
           isPasswordLengthValid
-        );
+        ) {
+          isPasswordTrue = true;
+        } else {
+          isPasswordTrue = false;
+        }
+
+        enableSubmit();
       };
 
       creditCard.onkeyup = function () {
-        let isCreditCardNumberValid;
         let creditNumber = creditCard.value;
+        let sum = parseInt(creditNumber.charAt(creditNumber.length - 1));
 
-        let array = (creditNumber + "")
-          .split("")
-          .reverse()
-          .map((x) => parseInt(x));
-        let lastDigit = array.splice(0, 1)[0];
-        let sum = array.reduce(
-          (acc, val, i) =>
-            i % 2 !== 0 ? acc + val : acc + ((val * 2) % 9) || 9,
-          0
-        );
-        sum += lastDigit;
-        // console.log(sum % 10 === 0);
-        isCreditCardNumberValid = sum % 10 === 0;
+        for (let i = 0; i < creditNumber.length - 1; i++) {
+          let value = parseInt(creditNumber.charAt(i));
+
+          if (i % 2 === 0) {
+            value *= 2;
+          }
+          if (value > 9) {
+            value -= 9;
+          }
+          sum += value;
+        }
+
+        isCreditCardTrue = sum % 10 === 0;
+        console.log(isCreditCardTrue);
+
+        // let array = creditNumber
+        //   .split("")
+        //   .reverse()
+        //   .map((x) => parseInt(x));
+        // let lastDigit = array.splice(0, 1)[0];
+        // let sum = array.reduce((acc, val, i) => {
+        //   return i % 2 !== 0 ? acc + val : acc + ((val * 2) % 9) || 9;
+        // }, 0);
+        // sum += lastDigit;
+        // // console.log(sum % 10 === 0);
 
         const creditCardElement = document.getElementById("creditHelp");
 
-        if (isCreditCardNumberValid === true) {
+        if (isCreditCardTrue === true) {
           creditCardElement.classList.add("validText");
           creditCardElement.classList.remove("invalidText");
+          isCreditCardTrue = true;
         } else {
           creditCardElement.classList.add("invalidText");
           creditCardElement.classList.remove("validText");
+          isCreditCardTrue = false;
         }
 
-        submitButton.disabled = !isCreditCardNumberValid;
-        console.log(isCreditCardNumberValid);
+        enableSubmit();
+      };
+
+      const enableSubmit = () => {
+        console.log(isUsernameTrue, isPasswordTrue, isCreditCardTrue);
+        if (isUsernameTrue && isPasswordTrue && isCreditCardTrue) {
+          submitButton.disabled = false;
+        } else {
+          submitButton.disabled = true;
+        }
       };
     </script>
   </body>

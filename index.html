@@ -195,17 +195,6 @@
         isCreditCardTrue = sum % 10 === 0;
         console.log(isCreditCardTrue);
 
-        // let array = creditNumber
-        //   .split("")
-        //   .reverse()
-        //   .map((x) => parseInt(x));
-        // let lastDigit = array.splice(0, 1)[0];
-        // let sum = array.reduce((acc, val, i) => {
-        //   return i % 2 !== 0 ? acc + val : acc + ((val * 2) % 9) || 9;
-        // }, 0);
-        // sum += lastDigit;
-        // // console.log(sum % 10 === 0);
-
         const creditCardElement = document.getElementById("creditHelp");
 
         if (isCreditCardTrue === true) {

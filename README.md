@@ -1,7 +1,7 @@
-# form-validation
+## form-validation
 An exercise completed in FrauenLoop web develoment cohort Fall 2020
 
-Learnings:
+### Skills Demonstrated:
   - if, else statments
   - for loops
   - event listeners
